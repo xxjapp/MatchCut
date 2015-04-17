@@ -5,6 +5,7 @@
 
 #include "mcut.h"
 
+#define BUF_SIZE    524288
 #define USE_REGEX   0
 
 #if USE_REGEX
@@ -14,7 +15,7 @@
 #   define MATCH(line, ex)     (line.find(ex) != std::string::npos)
 #endif
 
-size_t searchPatternInFile(const char *file, const char *pattern)
+long long searchPatternInFile(const char *file, const char *pattern)
 {
     std::ifstream infile(file, std::ifstream::binary);
 
@@ -30,7 +31,6 @@ size_t searchPatternInFile(const char *file, const char *pattern)
 
     std::string line;
     bool found = false;
-    size_t lineOffset = (size_t)infile.tellg();
 
     while (std::getline(infile, line)) {
         if (MATCH(line, ex)) {
@@ -38,7 +38,6 @@ size_t searchPatternInFile(const char *file, const char *pattern)
             break;
         }
 
-        lineOffset = (size_t)infile.tellg();
     }
 
     if (!found) {
@@ -48,7 +47,7 @@ size_t searchPatternInFile(const char *file, const char *pattern)
     return lineOffset;
 }
 
-void splitFileAtOffset(const char *file, size_t offset)
+void splitFileAtOffset(const char *file, long long offset)
 {
     std::string dest1Name = std::string(file) + "_1";
     std::string dest2Name = std::string(file) + "_2";
@@ -57,24 +56,24 @@ void splitFileAtOffset(const char *file, size_t offset)
     FILE *dest1 = fopen(dest1Name.c_str(), "wb");
     FILE *dest2 = fopen(dest2Name.c_str(), "wb");
 
-    char buf[BUFSIZ];
-    size_t size;
-    size_t writeSize = 0;
+    char buf[BUF_SIZE];
+    long long size;
+    long long writeSize = 0;
     bool part1 = true;
 
-    while (size = fread(buf, 1, BUFSIZ, source)) {
+    while (size = fread(buf, 1, BUF_SIZE, source)) {
         if (part1) {
             writeSize += size;
 
             if (writeSize < offset) {
-                fwrite(buf, 1, size, dest1);
+                fwrite(buf, 1, size_t(size), dest1);
             } else {
-                fwrite(buf, 1, size - (writeSize - offset), dest1);
-                fwrite(buf + size - (writeSize - offset), 1, writeSize - offset, dest2);
+                fwrite(buf, 1, size_t(size - (writeSize - offset)), dest1);
+                fwrite(buf + size_t(size - (writeSize - offset)), 1, size_t(writeSize - offset), dest2);
                 part1 = false;
             }
         } else {
-            fwrite(buf, 1, size, dest2);
+            fwrite(buf, 1, size_t(size), dest2);
         }
     }
 
@@ -104,7 +103,7 @@ int main(int argc, char *argv[])
     printf("file    = %s\n", file);
     printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n", file);
 
-    size_t offset = searchPatternInFile(file, pattern);
+    long long offset = searchPatternInFile(file, pattern);
 
     printf("offset  = %lld\n", offset);
 

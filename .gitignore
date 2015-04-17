@@ -31,7 +31,8 @@
 **/Debug/
 **/Release/
 
-# .opensdf & .sdf & .suo files
+# .opensdf & .sdf & .suo & .user files
 */*.opensdf
 */*.sdf
 */*.suo
+**/*.user
