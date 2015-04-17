@@ -1,10 +1,18 @@
 ﻿#include <stdio.h>
 
 #include <fstream>
-#include <regex>
 #include <string>
 
 #include "MatchCut.h"
+
+#define USE_REGEX   0
+
+#if USE_REGEX
+#   include <regex>
+#   define MATCH(line, ex)     std::regex_search(line, ex)
+#else
+#   define MATCH(line, ex)     (line.find(ex) != std::string::npos)
+#endif
 
 size_t searchPatternInFile(const char *file, const char *pattern)
 {
@@ -14,13 +22,18 @@ size_t searchPatternInFile(const char *file, const char *pattern)
         return -1;
     }
 
+#if USE_REGEX
     std::regex ex(pattern);
+#else
+    std::string ex = pattern;
+#endif
+
     std::string line;
     bool found = false;
     size_t lineOffset = (size_t)infile.tellg();
 
     while (std::getline(infile, line)) {
-        if (std::regex_search(line, ex)) {
+        if (MATCH(line, ex)) {
             found = true;
             break;
         }
@@ -57,7 +70,7 @@ void splitFileAtOffset(const char *file, size_t offset)
                 fwrite(buf, 1, size, dest1);
             } else {
                 fwrite(buf, 1, size - (writeSize - offset), dest1);
-                fwrite(buf, 1, writeSize - offset, dest2);
+                fwrite(buf + size - (writeSize - offset), 1, writeSize - offset, dest2);
                 part1 = false;
             }
         } else {
