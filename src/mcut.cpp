@@ -31,6 +31,7 @@ long long searchPatternInFile(const char *file, const char *pattern)
 
     std::string line;
     bool found = false;
+    long long lineOffset = infile.tellg();
 
     while (std::getline(infile, line)) {
         if (MATCH(line, ex)) {
@@ -38,6 +39,7 @@ long long searchPatternInFile(const char *file, const char *pattern)
             break;
         }
 
+        lineOffset = infile.tellg();
     }
 
     if (!found) {
