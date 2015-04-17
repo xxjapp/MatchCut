@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-#include "MatchCut.h"
+#include "mcut.h"
 
 #define USE_REGEX   0
 
@@ -85,9 +85,9 @@ void splitFileAtOffset(const char *file, size_t offset)
 
 void printHelp()
 {
-    printf("MatchCut: Cut a file based on match\n");
+    printf("mcut: Cut a file based on match\n");
     printf("Usage\n");
-    printf("$ MatchCut <pattern> <input_file>\n");
+    printf("$ mcut <pattern> <input_file>\n");
 }
 
 int main(int argc, char *argv[])

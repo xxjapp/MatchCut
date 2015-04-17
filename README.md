@@ -1,2 +1,2 @@
-# MatchCut
-MatchCut: Cut a file based on match
+# mcut
+mcut: Cut a file based on match

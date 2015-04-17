@@ -40,7 +40,7 @@ OBJ_DIR     := $(OBJ)/$(CFG)
 BIN_DIR     := $(BIN)/$(CFG)
 SOURCES     := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS     := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
-EXECUTABLE  := $(BIN_DIR)/MatchCut
+EXECUTABLE  := $(BIN_DIR)/mcut
 
 # Rules for make
 

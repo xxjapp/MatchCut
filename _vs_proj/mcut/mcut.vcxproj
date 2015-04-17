@@ -11,14 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\MatchCut.cpp" />
+    <ClCompile Include="..\..\src\mcut.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\MatchCut.h" />
+    <ClInclude Include="..\..\include\mcut.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{66912D45-CC93-44F9-BADE-3AA5B11A7A29}</ProjectGuid>
-    <RootNamespace>MatchCut</RootNamespace>
+    <RootNamespace>mcut</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

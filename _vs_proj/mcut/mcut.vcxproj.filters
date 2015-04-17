@@ -9,12 +9,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\MatchCut.cpp">
+    <ClCompile Include="..\..\src\mcut.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\MatchCut.h">
+    <ClInclude Include="..\..\include\mcut.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
