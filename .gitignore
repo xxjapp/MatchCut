@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+# Debug & Release directories
+**/Debug/
+**/Release/
+
+# .opensdf & sdf
+*/*.opensdf
+*/*.sdf
