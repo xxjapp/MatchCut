@@ -1,4 +1,6 @@
-﻿#include <string>
+#include <string.h>
+
+#include <string>
 
 #include "BufferedFileReader.h"
 #include "BufferedFileWriter.h"
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
 
     printf("pattern = %s\n", pattern);
     printf("file    = %s\n", file);
-    printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n", file);
+    printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
 
     process(file, pattern);
 

@@ -30,6 +30,8 @@
 # Debug & Release directories
 **/Debug/
 **/Release/
+bin/
+obj/
 
 # .opensdf & .sdf & .suo & .user files
 */*.opensdf
