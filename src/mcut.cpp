@@ -1,4 +1,4 @@
-#include <string.h>
+﻿#include <string.h>
 
 #include <string>
 
@@ -85,6 +85,7 @@ void process(const char *file, const char *pattern)
 
         // printf("part1Size = %ld, part2Size = %ld\n", part1Size, part2Size);
         putchar((part2Size > 0) ? '|' : '.');
+        fflush(stdout);
 
         writer1.write(content, part1Size);
         writer2.write(content + part1Size, part2Size);
@@ -106,6 +107,7 @@ void process(const char *file, const char *pattern)
     while ((dataSize = reader.read(data)) > 0) {
         // printf("dataSize = %ld\n", 0, dataSize);
         putchar('.');
+        fflush(stdout);
 
         writer2.write(data, dataSize);
     }
