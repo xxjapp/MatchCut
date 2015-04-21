@@ -9,11 +9,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\BufferedFileReader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BufferedFileWriter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\mcut.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\BufferedFileReader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BufferedFileWriter.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\mcut.h">
       <Filter>include</Filter>
     </ClInclude>

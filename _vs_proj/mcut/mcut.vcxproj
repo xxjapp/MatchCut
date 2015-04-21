@@ -11,9 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\BufferedFileReader.cpp" />
+    <ClCompile Include="..\..\src\BufferedFileWriter.cpp" />
     <ClCompile Include="..\..\src\mcut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\BufferedFileReader.h" />
+    <ClInclude Include="..\..\include\BufferedFileWriter.h" />
     <ClInclude Include="..\..\include\mcut.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
