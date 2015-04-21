@@ -23,12 +23,12 @@ BufferedFileReader::~BufferedFileReader()
     fclose(fp);
 }
 
-size_t BufferedFileReader::read(BYTE *buffer, size_t bufferSize)
+size_t BufferedFileReader::read(void *buffer, size_t bufferSize)
 {
     size_t readSize = 0;
 
     while (readSize < bufferSize) {
-        size_t rSize = readOnce(buffer + readSize, bufferSize - readSize);
+        size_t rSize = readOnce((BYTE *)buffer + readSize, bufferSize - readSize);
 
         if (rSize == 0) {
             break;
@@ -40,7 +40,7 @@ size_t BufferedFileReader::read(BYTE *buffer, size_t bufferSize)
     return readSize;
 }
 
-size_t BufferedFileReader::readOnce(BYTE *buffer, size_t bufferSize)
+size_t BufferedFileReader::readOnce(void *buffer, size_t bufferSize)
 {
     if (end) {
         return 0;

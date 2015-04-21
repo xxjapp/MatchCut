@@ -9,10 +9,10 @@ public:
     ~BufferedFileReader();
 
 public:
-    size_t read(BYTE *buffer, size_t bufferSize);
+    size_t read(void *buffer, size_t bufferSize);
 
 protected:
-    size_t readOnce(BYTE *buffer, size_t bufferSize);
+    size_t readOnce(void *buffer, size_t bufferSize);
     void internalRead();
 
 private:

@@ -24,19 +24,19 @@ BufferedFileWriter::~BufferedFileWriter()
     fclose(fp);
 }
 
-size_t BufferedFileWriter::write(const BYTE *buffer, size_t bufferSize)
+size_t BufferedFileWriter::write(const void *buffer, size_t bufferSize)
 {
     size_t writeSize = 0;
 
     while (writeSize < bufferSize) {
-        size_t wSize = writeOnce(buffer + writeSize, bufferSize - writeSize);
+        size_t wSize = writeOnce((const BYTE *)buffer + writeSize, bufferSize - writeSize);
         writeSize += wSize;
     }
 
     return writeSize;
 }
 
-size_t BufferedFileWriter::writeOnce(const BYTE *buffer, size_t bufferSize)
+size_t BufferedFileWriter::writeOnce(const void *buffer, size_t bufferSize)
 {
     if (spaceSize == 0) {
         internalWrite();

@@ -9,10 +9,10 @@ public:
     ~BufferedFileWriter();
 
 public:
-    size_t write(const BYTE *buffer, size_t bufferSize);
+    size_t write(const void *buffer, size_t bufferSize);
 
 protected:
-    size_t writeOnce(const BYTE *buffer, size_t bufferSize);
+    size_t writeOnce(const void *buffer, size_t bufferSize);
     void internalWrite();
 
 private:
