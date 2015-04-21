@@ -40,6 +40,30 @@ size_t BufferedFileReader::read(void *buffer, size_t bufferSize)
     return readSize;
 }
 
+size_t BufferedFileReader::read(const void *&buffer)
+{
+    if (end) {
+        return 0;
+    }
+
+    if (contentSize == 0) {
+        internalRead();
+    }
+
+    if (contentSize == 0) {
+        end = true;
+        return 0;
+    }
+
+    buffer = content;
+    size_t dataSize = contentSize;
+
+    content += dataSize;
+    contentSize = 0;
+
+    return dataSize;
+}
+
 size_t BufferedFileReader::readOnce(void *buffer, size_t bufferSize)
 {
     if (end) {

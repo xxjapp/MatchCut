@@ -1,87 +1,114 @@
-﻿#include <stdio.h>
+﻿#include <string>
 
-#include <fstream>
-#include <string>
-
+#include "BufferedFileReader.h"
+#include "BufferedFileWriter.h"
 #include "mcut.h"
 
-#define BUF_SIZE    524288
-#define USE_REGEX   0
+#define BUFFER_SIZE     1048576
 
-#if USE_REGEX
-#   include <regex>
-#   define MATCH(line, ex)     std::regex_search(line, ex)
-#else
-#   define MATCH(line, ex)     (line.find(ex) != std::string::npos)
-#endif
-
-long long searchPatternInFile(const char *file, const char *pattern)
+/*
+* Reverse memchr()
+* Find the last occurrence of 'c' in the buffer 's' of size 'n'.
+*/
+void *memrchr(const void *s, int c, size_t n)
 {
-    std::ifstream infile(file, std::ifstream::binary);
+    const unsigned char *cp;
 
-    if (!infile) {
-        return -1;
+    if (n != 0) {
+        cp = (unsigned char *)s + n;
+
+        do {
+            if (*(--cp) == (unsigned char)c) {
+                return (void *)cp;
+            }
+        } while (--n != 0);
     }
 
-#if USE_REGEX
-    std::regex ex(pattern);
-#else
-    std::string ex = pattern;
-#endif
-
-    std::string line;
-    bool found = false;
-    long long lineOffset = infile.tellg();
-
-    while (std::getline(infile, line)) {
-        if (MATCH(line, ex)) {
-            found = true;
-            break;
-        }
-
-        lineOffset = infile.tellg();
-    }
-
-    if (!found) {
-        return -2;
-    }
-
-    return lineOffset;
+    return (void *)0;
 }
 
-void splitFileAtOffset(const char *file, long long offset)
+void parseContent(const char *content, size_t contentSize, const char *pattern, size_t &part1Size, size_t &part2Size)
+{
+    const char *patternPos = strstr(content, pattern);
+
+    if (!patternPos) {
+        const void *lfPos = memrchr(content, '\n', contentSize);
+
+        if (!lfPos) {
+            part1Size = contentSize;
+        } else {
+            part1Size = (const char *)lfPos - content + 1;
+        }
+
+        part2Size = 0;
+    } else {
+        const void *lfPos = memrchr(content, '\n', patternPos - content);
+
+        if (!lfPos) {
+            part1Size = 0;
+        } else {
+            part1Size = (const char *)lfPos - content + 1;
+        }
+
+        part2Size = contentSize - part1Size;
+    }
+}
+
+void process(const char *file, const char *pattern)
 {
     std::string dest1Name = std::string(file) + "_1";
     std::string dest2Name = std::string(file) + "_2";
 
-    FILE *source = fopen(file, "rb");
-    FILE *dest1 = fopen(dest1Name.c_str(), "wb");
-    FILE *dest2 = fopen(dest2Name.c_str(), "wb");
+    BufferedFileReader reader(file);
+    BufferedFileWriter writer1(dest1Name.c_str());
+    BufferedFileWriter writer2(dest2Name.c_str());
 
-    char buf[BUF_SIZE];
-    long long size;
-    long long writeSize = 0;
-    bool part1 = true;
+    char *content = (char *)malloc(BUFFER_SIZE + 1);
+    size_t contentSize = 0;
 
-    while (size = fread(buf, 1, BUF_SIZE, source)) {
-        if (part1) {
-            writeSize += size;
+    size_t part1Size = 0;
+    size_t part2Size = 0;
 
-            if (writeSize < offset) {
-                fwrite(buf, 1, size_t(size), dest1);
-            } else {
-                fwrite(buf, 1, size_t(size - (writeSize - offset)), dest1);
-                fwrite(buf + size_t(size - (writeSize - offset)), 1, size_t(writeSize - offset), dest2);
-                part1 = false;
-            }
-        } else {
-            fwrite(buf, 1, size_t(size), dest2);
+    // search and write part1/part2 data
+    while (true) {
+        contentSize += reader.read(content + contentSize, BUFFER_SIZE - contentSize);
+
+        if (contentSize == 0) {
+            break;
         }
+
+        content[contentSize] = 0;
+
+        parseContent(content, contentSize, pattern, part1Size, part2Size);
+
+        // printf("part1Size = %ld, part2Size = %ld\n", part1Size, part2Size);
+        putchar((part2Size > 0) ? '|' : '.');
+
+        writer1.write(content, part1Size);
+        writer2.write(content + part1Size, part2Size);
+
+        if (part2Size > 0) {
+            break;
+        }
+
+        contentSize -= part1Size;
+        memmove(content, content + part1Size, contentSize);
     }
 
-    fclose(dest2);
-    fclose(dest1);
-    fclose(source);
+    free(content);
+
+    // write part2 data
+    const void *data = NULL;
+    size_t dataSize = 0;
+
+    while ((dataSize = reader.read(data)) > 0) {
+        // printf("dataSize = %ld\n", 0, dataSize);
+        putchar('.');
+
+        writer2.write(data, dataSize);
+    }
+
+    putchar('\n');
 }
 
 void printHelp()
@@ -105,19 +132,7 @@ int main(int argc, char *argv[])
     printf("file    = %s\n", file);
     printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n", file);
 
-    long long offset = searchPatternInFile(file, pattern);
+    process(file, pattern);
 
-    printf("offset  = %lld\n", offset);
-
-    if (offset == -2) {
-        fprintf(stderr, "can not found pattern '%s' in file '%s'\n", pattern, file);
-    } else if (offset == -1) {
-        fprintf(stderr, "can not read '%s'\n", file);
-    } else if (offset == 0) {
-        fprintf(stdout, "first line of file '%s' matched\n", file);
-    } else {
-        splitFileAtOffset(file, offset);
-    }
-
-    return (int)offset;
+    return 0;
 }

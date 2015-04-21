@@ -10,6 +10,7 @@ public:
 
 public:
     size_t read(void *buffer, size_t bufferSize);
+    size_t read(const void *&buffer);
 
 protected:
     size_t readOnce(void *buffer, size_t bufferSize);
